@@ -17,10 +17,11 @@ const { Dropbox } = require("dropbox");
 
 const dbx = new Dropbox(dropBoxConfig);
 
-const redirectUri = `http://${hostname}:${port}/auth`;
-const authUrl = dbx.auth.getAuthenticationUrl(redirectUri, null, "code", "offline", null, "none", false)
+const baseUri = `http://${hostname}:${port}`;
+const redirectUri = `${baseUri}/auth`;
 
 app.get("/", (req, res) => {
+	dbx.auth.getAuthenticationUrl(redirectUri, null, "code", "offline", null, "none", false)
 	.then((authUrl) => {
 		res.writeHead(302, { Location: authUrl });
 		res.end();
@@ -52,4 +53,4 @@ app.get("/auth", (req, res) => {
 });
 
 app.listen(port);
-console.log(`Server listening. Browse to ${authUrl} to authenticate.`);
+console.log(`Server listening. Browse to ${baseUri} to authenticate.`);
